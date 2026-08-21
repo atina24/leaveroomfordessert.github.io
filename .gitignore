@@ -3,3 +3,5 @@ scripts/cache/
 .jekyll-cache/
 .jekyll-metadata
 _site/
+__pycache__/
+*.pyc

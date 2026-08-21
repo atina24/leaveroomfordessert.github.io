@@ -1,84 +1,142 @@
-# Leave Room for Dessert (GitHub Pages)
+# Leave Room for Dessert — site handbook
 
-A static copy of [leaveroomfordessert.com](http://leaveroomfordessert.com/), ready to push to GitHub Pages.
+This is Anita’s food blog, rebuilt as a static website for GitHub Pages.  
+The live look comes from files in `_posts/` and `_pages/`. After you change those, you rebuild, then commit and push.
 
-The original WordPress theme used **relative** nav links (`about/`, `recipes/`, `links/`). From a post such as `/banana-bread/`, those become `/banana-bread/about/` and so on, which is why a static-export plugin looped. This conversion uses root-absolute URLs (`/about/`, `/recipes/`, `/banana-bread/`) so that cannot happen.
+## Everyday workflow
 
-## What is included
+1. Edit or add a post in `_posts/`.
+2. Put any new photos in `assets/uploads/YYYY/MM/`.
+3. Rebuild:
 
-- All **233** published posts (recipe body, photos, date, categories)
-- **194** recipes on `/recipes/` (A–Z list with a filter box)
-- About, Links, home page, monthly archives, and category pages
-- Original Kubrick-based look (banner, colours, layout)
-- Local copies of the photos under `assets/uploads/`
+```bash
+cd /Users/nvonkorff/Work/git_repositories/leaveroomfordessert.github.io
+python3 scripts/build_site.py
+```
 
-Comments are **not** included. Search is a simple client-side filter of post titles and excerpts.
-
-## Preview locally
-
-From this folder:
+4. Preview:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then open http://127.0.0.1:8000/ and http://127.0.0.1:8000/recipes/.
+Open http://127.0.0.1:8000/
 
-Root-absolute links (`/recipes/`) only work when you use a local server, not when you open `index.html` as a file.
+5. Commit on the `redesign` branch (or `main` once you merge) and push.
 
-## Publish to GitHub Pages
+You need Python 3 with BeautifulSoup (`pip3 install beautifulsoup4`).
 
-1. Create a GitHub account for the site (for example `leaveroomfordessert`).
-2. Create a repository named **`leaveroomfordessert.github.io`**. That name gives you a user site at `https://leaveroomfordessert.github.io/` with no extra path prefix.
-3. From this folder:
+## How a post is stored
 
-```bash
-git init
-git add .
-git commit -m "Initial static export of Leave Room for Dessert"
-git branch -M main
-git remote add origin git@github.com:ACCOUNT/leaveroomfordessert.github.io.git
-git push -u origin main
+Each post is an HTML file with a small header (YAML front matter) at the top:
+
+```yaml
+---
+title: "Banana Bread"
+date: 2009-06-07
+permalink: /banana-bread/
+image: "/assets/uploads/2009/06/bananabread-15.jpg"
+excerpt: "I don’t like wasting food."
+tags: ["Recipes", "Cakes, Slices and Biscuits", "Snacks"]
+---
+<p>Story and method go here.</p>
+<p><img src="/assets/uploads/2009/06/bananabread-15.jpg" alt="Banana bread"></p>
 ```
 
-4. In the repo: **Settings → Pages → Build and deployment**. Source: **Deploy from a branch**, branch **main**, folder **/ (root)**.
-5. Wait a minute, then visit `https://ACCOUNT.github.io/`.
-
-`.nojekyll` is already in the repo so GitHub serves the HTML as-is.
-
-### Custom domain (optional)
-
-If you later point `leaveroomfordessert.com` at GitHub Pages:
-
-1. Add a `CNAME` file in this folder containing only:
-
-   ```
-   leaveroomfordessert.com
-   ```
-
-2. In GitHub: **Settings → Pages → Custom domain**.
-3. At the DNS host, add the records GitHub shows (usually an A record or CNAME).
-
-If you instead use a **project** repo (`https://ACCOUNT.github.io/some-repo/`), rebuild with a prefix:
-
-```bash
-python3 scripts/convert_wordpress.py --base-url /some-repo --skip-images
-```
-
-## Rebuild from WordPress
-
-Needs Python 3, `requests`, and `beautifulsoup4` (`pip3 install -r scripts/requirements.txt`).
-
-```bash
-python3 scripts/convert_wordpress.py
-```
-
-Useful flags:
-
-| Flag | Purpose |
+| Field | What it does |
 | --- | --- |
-| `--skip-images` | Reuse photos already copied into `assets/uploads/` |
-| `--refresh-cache` | Re-download posts from the live WordPress API |
-| `--base-url /repo` | Prefix every link for a project Pages site |
+| `title` | Headline on the post, cards, and browser tab |
+| `date` | `YYYY-MM-DD`. Newest dates appear first on Home |
+| `permalink` | Public URL, e.g. `/banana-bread/` |
+| `image` | Card thumbnail on Home and Recipes. Use a landscape photo if you can |
+| `excerpt` | Short teaser on cards |
+| `tags` | How the post is grouped. See below |
 
-The script reads http://leaveroomfordessert.com/wp-json/ and copies images from the local wget dump at `/Users/nvonkorff/website_backups/leaveroomfordessert`.
+The filename should be `YYYY-MM-DD-url-slug.html`, matching the date and permalink.
+
+## Create a new post
+
+Shortcut:
+
+```bash
+python3 scripts/new_post.py "Lemon Ricotta Cake" --tags "Recipes,Dessert,Cakes, Slices and Biscuits"
+```
+
+That writes a starter file in `_posts/`. Open it, paste the story, ingredients and method, and point `image` at a photo.
+
+Then:
+
+1. Copy photos into `assets/uploads/2026/08/` (use the real year/month).
+2. In the post, add:
+
+   ```html
+   <p><img src="/assets/uploads/2026/08/lemon-ricotta.jpg" alt="Lemon ricotta cake"></p>
+   ```
+
+3. Run `python3 scripts/build_site.py`.
+4. Refresh the local preview.
+
+To keep a post **off** the Recipes page, omit the `Recipes` tag (use it for stories, parties, or decorating posts that are not really recipes).
+
+## Tags (replaces the old Categories)
+
+There is no separate categories database. Tags live on the post.
+
+- Add as many as you like in the `tags` list.
+- The **Recipes** tag puts the post on `/recipes/`.
+- Every other tag gets a page at `/tags/tag-name/`, for example `/tags/chocolate/`.
+- Home shows a handful of popular tags. `/tags/` lists all of them.
+
+Useful existing tags: `Dessert`, `Cakes, Slices and Biscuits`, `Chocolate`, `Main Meals`, `Snacks`, `Vegetarian`, `Breakfast`, `Daring Bakers`, `Cake Decorating`, `Pastry`.
+
+You can invent new ones (`For kids`, `Gluten Free`, `Ice Cream`). After a rebuild they appear automatically.
+
+To rename a tag, change the text in every post that uses it, then rebuild.
+
+## Photos
+
+Keep originals in `assets/uploads/YYYY/MM/`. Use paths that start with `/assets/uploads/...` so they work on GitHub Pages and with a custom domain.
+
+The header banner is `assets/images/banner.jpg` (the original banner with the dark border trimmed). Swap that file if you ever re-shoot the header; keep the same filename.
+
+## Pages
+
+| URL | Source |
+| --- | --- |
+| `/` | Built from the newest posts |
+| `/recipes/` | Every post tagged `Recipes`, with live search and tag chips |
+| `/about/` | `_pages/about.html` |
+| `/tags/` | Built from all tags in use |
+| `/banana-bread/` | `_posts/2009-06-07-banana-bread.html` |
+
+Edit About by changing `_pages/about.html`, then rebuild.
+
+## What the rebuild does
+
+`scripts/build_site.py` reads `_posts/` and `_pages/` and writes the public HTML (`index.html`, `recipes/`, `about/`, each post folder, tag pages). It does not change your `_posts/` files.
+
+The first time it ran, it copied the old WordPress export into `_posts/`. You should not need that step again.
+
+## GitHub Pages
+
+The public site is the HTML at the repo root (plus `assets/`). `.nojekyll` tells GitHub not to run Jekyll.
+
+After a rebuild:
+
+```bash
+git add -A
+git status
+git commit -m "Add lemon ricotta cake"
+git push
+```
+
+If this work is still on the `redesign` branch, merge it to `main` when you are happy, then push `main`.
+
+## Preview checklist
+
+- Home shows the banner, recent post cards, and tag shortcuts
+- Recipes search filters as you type
+- Tag chips narrow the list
+- A recipe page shows the story, photos, tags, and Recent Posts
+- About still has Anita’s photo and note
+- Nothing mentions WordPress, email subscribe, archives, or the old blogroll
