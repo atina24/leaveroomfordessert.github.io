@@ -370,7 +370,7 @@ def build() -> None:
 <section class="hero-copy">
   <p class="kicker">A Sydney food blog</p>
   <h1>Recipes worth lingering over</h1>
-  <p class="lede">Cakes, puddings, weeknight dinners and bakers’ projects from Anita’s kitchen — collected here so you can find something delicious without the clutter.</p>
+  <p class="lede">Cakes, puddings, weeknight dinners and bakers’ projects from Anita’s kitchen — collected here so you can find something delicious.</p>
   <p><a class="btn" href="/recipes/">Browse all recipes</a></p>
 </section>
 <div class="section-head"><h2>Recent Posts</h2><a href="/recipes/">All recipes →</a></div>
@@ -392,7 +392,7 @@ def build() -> None:
   <h1>Find something to bake</h1>
   <p class="lede">Search by name, or tap a tag. There are {len(recipes)} recipes in the tin.</p>
 </section>
-<p><input class="recipe-search" id="recipe-search" type="search" placeholder="Try banana, chocolate, chicken…" aria-label="Filter recipes"></p>
+<p><input class="recipe-search" id="recipe-search" type="search" placeholder="Search for a recipe or ingredient: e.g. pizza OR almond" aria-label="Filter recipes"></p>
 <p class="meta" id="recipe-count">{len(recipes)} recipes</p>
 <div class="filters">{''.join(chips)}</div>
 <div class="card-grid">{recipe_cards}</div>
