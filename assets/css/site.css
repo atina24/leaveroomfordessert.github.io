@@ -187,6 +187,11 @@ h1, h2, h3, .post-title {
   min-height: 100%;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+.card[hidden],
+[data-recipe-card][hidden],
+[hidden] {
+  display: none !important;
+}
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 22px 44px rgba(44, 24, 16, 0.16);
