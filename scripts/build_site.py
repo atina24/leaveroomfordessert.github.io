@@ -194,7 +194,7 @@ def extract_posts() -> None:
         body = "".join(str(child) for child in entry.children).strip()
         first_img = entry.find("img")
         image = first_img.get("src") if first_img else ""
-        excerpt = " ".join(entry.get_text(" ", strip=True).split())[:180]
+        excerpt = clip_excerpt(" ".join(entry.get_text(" ", strip=True).split()))
         permalink = f"/{folder.name}/"
         meta = {
             "title": title,
@@ -227,6 +227,41 @@ def extract_posts() -> None:
             encoding="utf-8",
         )
     print(f"Extracted {count} posts into _posts/")
+
+
+EXCERPT_LIMIT = 180
+
+
+def clip_excerpt(text: str, limit: int = EXCERPT_LIMIT) -> str:
+    """Trim card teasers to a word boundary and add an ellipsis when truncated."""
+    raw = text or ""
+    collapsed = " ".join(raw.split())
+    if not collapsed:
+        return ""
+    if collapsed.endswith("..."):
+        return collapsed
+
+    sentence_end = re.search(r'[.!?…]["”\']?$', collapsed)
+    # Existing posts were sliced at `limit` characters, often mid-word.
+    overflow = len(collapsed) > limit or (len(raw) >= limit and not sentence_end)
+    if not overflow:
+        return collapsed
+
+    snippet = collapsed[:limit] if len(collapsed) > limit else collapsed
+    if len(collapsed) > limit:
+        mid_word = not snippet[-1].isspace() and not collapsed[limit].isspace()
+    else:
+        mid_word = not re.search(r"\s$", raw) and not sentence_end
+    if mid_word:
+        cut = snippet.rfind(" ")
+        if cut > 0:
+            snippet = snippet[:cut]
+    snippet = snippet.rstrip(" ,;:-–—")
+    if not snippet:
+        snippet = collapsed[: max(1, limit - 3)].rstrip()
+    if re.search(r'[.!?…]["”\']?$', snippet):
+        return snippet
+    return snippet + "..."
 
 
 def esc(text: str) -> str:
@@ -297,13 +332,14 @@ def card(post: dict) -> str:
     else:
         img = '<div class="card-image"></div>'
     tags = " · ".join(post.get("tags", [])[:3])
+    excerpt = clip_excerpt(post.get("excerpt", ""))
     return f"""
 <a class="card" href="{esc(post["permalink"])}" data-recipe-card data-title="{esc(post["title"])}" data-tags="{"|".join(esc(t) for t in post.get("tags", []))}" data-excerpt="{esc(post.get("excerpt", ""))}">
   {img}
   <div class="card-body">
     <p class="meta">{esc(post["date_pretty"])}{(" · " + esc(tags)) if tags else ""}</p>
     <h3>{esc(post["title"])}</h3>
-    <p class="excerpt">{esc(post.get("excerpt", ""))}</p>
+    <p class="excerpt">{esc(excerpt)}</p>
   </div>
 </a>
 """
