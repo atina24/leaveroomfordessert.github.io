@@ -389,7 +389,7 @@ def build() -> None:
     recipes_main = f"""
 <section class="hero-copy">
   <p class="kicker">Recipe index</p>
-  <h1>Find something to bake</h1>
+  <h1>Find something to make</h1>
   <p class="lede">Search by name, or tap a tag. There are {len(recipes)} recipes in the tin.</p>
 </section>
 <p><input class="recipe-search" id="recipe-search" type="search" placeholder="Search for a recipe or ingredient: e.g. pizza OR almond" aria-label="Filter recipes"></p>
