@@ -280,7 +280,7 @@ def nav(current: str) -> str:
 def page_shell(title: str, description: str, current: str, main: str, aside: str = "", extra_js: str = "") -> str:
     aside_html = f"<aside>{aside}</aside>" if aside else ""
     layout_class = "layout has-aside" if aside else "layout"
-    js = '<script src="/assets/js/site.js"></script>' if extra_js else ""
+    js = '<script src="/assets/js/header.js"></script>' + ('<script src="/assets/js/site.js"></script>' if extra_js else "")
     return f"""<!DOCTYPE html>
 <html lang="en-AU">
 <head>
@@ -292,7 +292,7 @@ def page_shell(title: str, description: str, current: str, main: str, aside: str
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/site.css?v=8">
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
@@ -303,6 +303,9 @@ def page_shell(title: str, description: str, current: str, main: str, aside: str
       <ul class="nav-links">
         {nav(current)}
       </ul>
+      <button class="header-collapse" type="button" aria-expanded="true" aria-label="Hide header">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"></path></svg>
+      </button>
       <form class="search-mini" action="/recipes/" method="get" role="search">
         <input type="search" name="q" placeholder="Search recipes…" aria-label="Search recipes">
         <button type="submit">Search</button>
