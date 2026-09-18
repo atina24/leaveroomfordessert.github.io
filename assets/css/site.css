@@ -70,7 +70,7 @@ a:hover { color: var(--gold); }
 }
 .banner img {
   display: block;
-  width: min(960px, 100%);
+  width: min(700px, 100%);
   margin: 0 auto;
 }
 
@@ -344,6 +344,11 @@ aside h2 { font-size: 1.5rem; }
   .nav { flex-wrap: wrap; }
   .search-mini { width: 100%; }
   .search-mini input { flex: 1; }
+  .banner img { width: min(600px, 92%); }
+}
+
+@media (max-width: 480px) {
+  .banner img { width: 82%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
