@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/site.css">
+  <link rel="stylesheet" href="/assets/css/site.css?v=8">
   <link rel="shortcut icon" href="/favicon.ico">
 </head>
 <body>
@@ -22,6 +22,9 @@
 <li><a href="/recipes/">Recipes</a></li>
 <li><a href="/about/">About</a></li>
       </ul>
+      <button class="header-collapse" type="button" aria-expanded="true" aria-label="Hide header">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"></path></svg>
+      </button>
       <form class="search-mini" action="/recipes/" method="get" role="search">
         <input type="search" name="q" placeholder="Search recipes…" aria-label="Search recipes">
         <button type="submit">Search</button>
@@ -134,6 +137,6 @@ Optional: melted chocolate, royal icing, or piping gel</p>
       <p>Always leave room for dessert.</p>
     </div>
   </footer>
-  
+  <script src="/assets/js/header.js"></script>
 </body>
 </html>
